@@ -2,6 +2,7 @@ import argparse
 import os
 import glob
 import subprocess
+from eta import ETA
 
 """
 https://nsidc.org/data/user-resources/help-center/how-do-i-convert-snodas-binary-files-geotiff-or-netcdf
@@ -21,6 +22,7 @@ def make_hdr(filename):
         # Write the string to the file
         file.write(content)
 
+
 def write_headers(folder):
     files = glob.glob(f'{folder}/*.dat')
     for file in files:
@@ -30,29 +32,34 @@ def write_headers(folder):
 def make_tif(dat_file):    
     tif_file = dat_file.replace('.dat', '.tif')
     cmd = f"gdal_translate -of GTiff -a_srs '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' -a_nodata -9999 -a_ullr -124.73333333333333 52.87500000000000 -66.94166666666667 24.95000000000000 {dat_file} {tif_file}"
-    result = subprocess.run(cmd, shell=True, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = subprocess.run(cmd, shell=True, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
 
+    
 def make_tifs(folder):
     files = glob.glob(f'{folder}/*.dat')
-    for file in files:
+    eta = ETA(n_tot=len(files))
+    for file in files:        
         make_tif(file)
+        eta.display(step='Converted {name}'.format(name=file))
         
+
 def remove_dats(folder):    
     files = glob.glob(f'{folder}/*.dat')
     for file_path in files:
         os.remove(file_path)                
-            
+
+
 def remove_txts(folder):    
     files = glob.glob(f'{folder}/*.txt')
     for file_path in files:        
         os.remove(file_path)     
 
+
 def remove_hdrs(folder):    
     files = glob.glob(f'{folder}/*.hdr')
     for file_path in files:        
         os.remove(file_path)
-    
-        
+            
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert dat files to geotiffs')        

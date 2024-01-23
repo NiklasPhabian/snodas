@@ -10,6 +10,7 @@ python to_gtiff.py
 ```
 
 ## Then, split the different model outputs
+https://nsidc.org/sites/default/files/g02158-v001-userguide_2_1.pdf
 
 
 ```bash
@@ -33,3 +34,6 @@ mv *ssmv11039lL00T0024*.tif ssmv11039lL00T0024/
 mv *ssmv11044bS__T0024*.tif ssmv11044bS__T0024/
 mv *ssmv11050lL00T0024*.tif ssmv11050lL00T0024/
 ```
+
+## Visualize 
+e.g. with `plot.ipynb`
